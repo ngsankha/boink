@@ -46,6 +46,28 @@ def add(msg):
 	print("From: " + name + " (" + email + ")")
 	print("Message: " + msg)
 
+def reply(num, msg):
+	try:
+		name = open(path+"/name", 'r').read()
+		email = open(path+"/email", 'r').read()
+	except IOError:
+		print("You have not set your name or email.\n")
+		return
+	if os.path.exists("issues.boink"):
+		issues = pickle.load(open("issues.boink", 'rb'))
+	else:
+		print("There are no issues opened.\n")
+		return
+	issue = issues [num - 1]
+	commit = {'name': name, 'email': email, 'msg': msg}
+	issue.append(commit)
+	bfile = open("issues.boink", 'wb')
+	pickle.dump(issues, bfile)
+	bfile.close()
+	print("Reply to Issue Added: Issue #" + str(num) + "\n")
+	print("From: " + name + " (" + email + ")")
+	print("Message: " + msg)
+
 if __name__ == '__main__':
 	import sys, os.path, pickle
 	path = os.path.expanduser("~/.boink")
@@ -57,6 +79,8 @@ if __name__ == '__main__':
 		setemail(sys.argv[2])
 	elif sys.argv[1] == "--add" or sys.argv[1] == "-a":
 		add(sys.argv[2])
+	elif sys.argv[1] == "--reply" or sys.argv[1] == "-r":
+		reply(int(sys.argv[2]), sys.argv[3])
 	else:
 		print("Unknown option.\n")
 		showHelp()
