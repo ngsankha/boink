@@ -68,6 +68,9 @@ def reply(num, msg):
 	print("From: " + name + " (" + email + ")")
 	print("Message: " + msg)
 
+def close(num):
+	reply(num, "Issue closed.")
+	
 if __name__ == '__main__':
 	import sys, os.path, pickle
 	path = os.path.expanduser("~/.boink")
@@ -81,6 +84,8 @@ if __name__ == '__main__':
 		add(sys.argv[2])
 	elif sys.argv[1] == "--reply" or sys.argv[1] == "-r":
 		reply(int(sys.argv[2]), sys.argv[3])
+	elif sys.argv[1] == "--close" or sys.argv[1] == "-c":
+		close(int(sys.argv[2]))
 	else:
 		print("Unknown option.\n")
 		showHelp()
