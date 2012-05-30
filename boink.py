@@ -70,7 +70,44 @@ def reply(num, msg):
 
 def close(num):
 	reply(num, "Issue closed.")
-	
+
+def showindi(num):
+	try:
+		name = open(path+"/name", 'r').read()
+		email = open(path+"/email", 'r').read()
+	except IOError:
+		print("You have not set your name or email.\n")
+		return
+	if os.path.exists("issues.boink"):
+		issues = pickle.load(open("issues.boink", 'rb'))
+	else:
+		print("There are no issues opened.\n")
+		return
+	issue = issues [num - 1]
+	print("Issue #" + str(num) + "\n")
+	for commit in issue:
+		print("From: " + commit['name'] + " (" + commit['email'] + ")")
+		print("Message: " + commit['msg'] + "\n")
+		print('-' * 15)
+
+def show():
+	try:
+		name = open(path+"/name", 'r').read()
+		email = open(path+"/email", 'r').read()
+	except IOError:
+		print("You have not set your name or email.\n")
+		return
+	if os.path.exists("issues.boink"):
+		issues = pickle.load(open("issues.boink", 'rb'))
+	else:
+		print("There are no issues opened.\n")
+		return
+	num = 1
+	for issue in issues:
+		showindi(num)
+		num+=1
+		print('=' * 15)
+
 if __name__ == '__main__':
 	import sys, os.path, pickle
 	path = os.path.expanduser("~/.boink")
@@ -86,6 +123,11 @@ if __name__ == '__main__':
 		reply(int(sys.argv[2]), sys.argv[3])
 	elif sys.argv[1] == "--close" or sys.argv[1] == "-c":
 		close(int(sys.argv[2]))
+	elif sys.argv[1] == "--show" or sys.argv[1] == "-s":
+		if(len(sys.argv) > 2):
+			showindi(int(sys.argv[2]))
+		else:
+			show()
 	else:
 		print("Unknown option.\n")
 		showHelp()
