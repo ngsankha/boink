@@ -4,12 +4,12 @@ def showHelp():
 	print("--set-name\tSet your name for use with Boink")
 	print("--set-email\tSet your email for use with Boink")
 	print("--add or -a\tAdd an issue")
+	print("--reply or -r\tReply to an issue")
 	print("--close or -c\tClose an issue")
 	print("--show or -s\tShow all issues\n")
 	print("Check out the details for commands at https://github.com/sankha93/boink\n")
 
 def setname(name):
-	path = os.path.expanduser("~/.boink")
 	if not(os.path.exists(path)):
 		os.makedirs(path)
 	conffile = open(path+"/name",'w')
@@ -18,7 +18,6 @@ def setname(name):
 	print("Ok! Got your name, " + name + ".")
 
 def setemail(email):
-	path = os.path.expanduser("~/.boink")
 	if not(os.path.exists(path)):
 		os.makedirs(path)
 	conffile = open(path+"/email",'w')
@@ -26,8 +25,30 @@ def setemail(email):
 	conffile.close()
 	print("Ok! Thats your email, " + email + ".")
 
+def add(msg):
+	try:
+		name = open(path+"/name", 'r').read()
+		email = open(path+"/email", 'r').read()
+	except IOError:
+		print("You have not set your name or email.\n")
+		return
+	if os.path.exists("issues.boink"):
+		issues = pickle.load(open("issues.boink", 'rb'))
+	else:
+		issues = []
+	commit = {'name': name, 'email': email, 'msg': msg}
+	issue = [commit]
+	issues.append(issue)
+	bfile = open("issues.boink", 'wb')
+	pickle.dump(issues, bfile)
+	bfile.close()
+	print("Issue Added: Issue #" + str(len(issues)) + "\n")
+	print("From: " + name + " (" + email + ")")
+	print("Message: " + msg)
+
 if __name__ == '__main__':
-	import sys, os.path
+	import sys, os.path, pickle
+	path = os.path.expanduser("~/.boink")
 	if len(sys.argv) < 2:
 		showHelp()
 	elif sys.argv[1] == "--set-name":
